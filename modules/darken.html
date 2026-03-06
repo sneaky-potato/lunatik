@@ -33,7 +33,7 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Fields">Fields</a></li>
+<li><a href="#Functions">Functions</a></li>
 </ul>
 
 
@@ -47,7 +47,7 @@
   <li><a href="../modules/crypto.rng.html">crypto.rng</a></li>
   <li><a href="../modules/crypto.shash.html">crypto.shash</a></li>
   <li><a href="../modules/crypto.skcipher.html">crypto.skcipher</a></li>
-  <li><a href="../modules/darken.html">darken</a></li>
+  <li><strong>darken</strong></li>
   <li><a href="../modules/data.html">data</a></li>
   <li><a href="../modules/device.html">device</a></li>
   <li><a href="../modules/fib.html">fib</a></li>
@@ -67,7 +67,7 @@
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/socket.inet.html">socket.inet</a></li>
   <li><a href="../modules/socket.raw.html">socket.raw</a></li>
-  <li><strong>socket.unix</strong></li>
+  <li><a href="../modules/socket.unix.html">socket.unix</a></li>
   <li><a href="../modules/syscall.html">syscall</a></li>
   <li><a href="../modules/syscall.table.html">syscall.table</a></li>
   <li><a href="../modules/thread.html">thread</a></li>
@@ -82,24 +82,19 @@
 
 <div id="content">
 
-<h1>Module <code>socket.unix</code></h1>
-<p>UNIX domain socket (AF_UNIX) operations.</p>
-<p> This module provides a higher-level abstraction over the <a href="../modules/socket.html#">socket</a> module.</p>
-    <h3>See also:</h3>
-    <ul>
-         <a href="../modules/socket.html#">socket</a>
-    </ul>
+<h1>Module <code>darken</code></h1>
+<p>Encrypted Lua script execution using AES-256-CTR.</p>
+<p> This module provides functionality to decrypt and execute Lua scripts
+ encrypted with AES-256 in CTR mode. Scripts are decrypted in-kernel
+ and executed immediately, with the decrypted plaintext never written
+ to persistent storage.</p>
 
 
-<h2><a href="#Fields">Fields</a></h2>
+<h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#path">path</a></td>
-	<td class="summary">Creates and binds a new UNIX domain socket to a specific path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#path">path</a></td>
-	<td class="summary">Creates and connects a new UNIX domain socket to a specific path.</td>
+	<td class="name" nowrap><a href="#run">run (ciphertext, iv, key)</a></td>
+	<td class="summary">Decrypts and executes an encrypted Lua script.</td>
 	</tr>
 </table>
 
@@ -107,60 +102,42 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
     <dt>
-    <a name = "path"></a>
-    <strong>path</strong>
+    <a name = "run"></a>
+    <strong>run (ciphertext, iv, key)</strong>
     </dt>
     <dd>
-    Creates and binds a new UNIX domain socket to a specific path.
+    Decrypts and executes an encrypted Lua script.
 
 
+    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">path</span>
-         (string) The UNIX domain socket path.
+        <li><span class="parameter">ciphertext</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         The encrypted Lua script (binary).
         </li>
-        <li><span class="parameter">type</span>
-         (string) [optional] "STREAM" or "DGRAM".
+        <li><span class="parameter">iv</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         The 16-byte initialization vector (binary).
         </li>
-    </ul>
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <li><a href="../modules/socket.html#new">socket.new</a></li>
-         <li><a href="../modules/socket.html#bind">socket.bind</a></li>
-    </ul>
-
-
-</dd>
-    <dt>
-    <a name = "path"></a>
-    <strong>path</strong>
-    </dt>
-    <dd>
-    Creates and connects a new UNIX domain socket to a specific path.
-
-
-    <ul>
-        <li><span class="parameter">path</span>
-         (string) The UNIX domain socket path.
-        </li>
-        <li><span class="parameter">type</span>
-         (string) [optional] "STREAM" or "DGRAM".
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         The 32-byte AES-256 key (binary).
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
 
+        The return values from the executed script.
+    </ol>
 
-    <h3>See also:</h3>
-    <ul>
-         <li><a href="../modules/socket.html#new">socket.new</a></li>
-         <li><a href="../modules/socket.html#connect">socket.connect</a></li>
-    </ul>
+    <h3>Raises:</h3>
+    Error if decryption fails or IV/key length is invalid.
+
 
 
 </dd>
