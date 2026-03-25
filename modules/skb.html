@@ -43,7 +43,7 @@
   <li><a href="../modules/completion.html">completion</a></li>
   <li><a href="../modules/cpu.html">cpu</a></li>
   <li><a href="../modules/crypto.html">crypto</a></li>
-  <li><strong>darken</strong></li>
+  <li><a href="../modules/darken.html">darken</a></li>
   <li><a href="../modules/data.html">data</a></li>
   <li><a href="../modules/device.html">device</a></li>
   <li><a href="../modules/fib.html">fib</a></li>
@@ -60,7 +60,7 @@
   <li><a href="../modules/probe.html">probe</a></li>
   <li><a href="../modules/rcu.html">rcu</a></li>
   <li><a href="../modules/signal.html">signal</a></li>
-  <li><a href="../modules/skb.html">skb</a></li>
+  <li><strong>skb</strong></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/socket.inet.html">socket.inet</a></li>
   <li><a href="../modules/socket.raw.html">socket.raw</a></li>
@@ -88,19 +88,54 @@
 
 <div id="content">
 
-<h1>Module <code>darken</code></h1>
-<p>Encrypted Lua script execution using AES-256-CTR.</p>
-<p> This module provides functionality to decrypt and execute Lua scripts
- encrypted with AES-256 in CTR mode. Scripts are decrypted in-kernel
- and executed immediately, with the decrypted plaintext never written
- to persistent storage.</p>
+<h1>Module <code>skb</code></h1>
+<p>Linux socket buffer interface.</p>
+<p>
+
+</p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#run">run (ciphertext, iv, key)</a></td>
-	<td class="summary">Decrypts and executes an encrypted Lua script.</td>
+	<td class="name" nowrap><a href="#__len">__len ()</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#checksum">checksum ()</a></td>
+	<td class="summary">Recomputes IP and transport-layer (TCP/UDP) checksums.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#copy">copy ()</a></td>
+	<td class="summary">Returns an independent copy of the skb with its own data buffer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#data">data ([layer])</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#forward">forward ()</a></td>
+	<td class="summary">Forwards the skb out through its ingress device.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ifindex">ifindex ()</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#resize">resize (n)</a></td>
+	<td class="summary">Expands (skb<em>put) or shrinks (skb</em>trim) the skb data area.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#vlan">vlan ()</a></td>
+	<td class="summary">
+
+</td>
 	</tr>
 </table>
 
@@ -112,37 +147,180 @@
 
     <dl class="function">
     <dt>
-    <a name = "run"></a>
-    <strong>run (ciphertext, iv, key)</strong>
+    <a name = "__len"></a>
+    <strong>__len ()</strong>
     </dt>
     <dd>
-    Decrypts and executes an encrypted Lua script.
+
+
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        skb length in bytes
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "checksum"></a>
+    <strong>checksum ()</strong>
+    </dt>
+    <dd>
+    Recomputes IP and transport-layer (TCP/UDP) checksums.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "copy"></a>
+    <strong>copy ()</strong>
+    </dt>
+    <dd>
+    Returns an independent copy of the skb with its own data buffer.
+ The skb is linearized before copying to avoid failures on fragmented skbs
+ (e.g. bridged traffic with paged data).
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">skb</span></span>
+
+
+
+    </ol>
+
+    <h3>Raises:</h3>
+    if skb is FRAGLIST GSO, linearization fails, or copy allocation fails
+
+
+
+</dd>
+    <dt>
+    <a name = "data"></a>
+    <strong>data ([layer])</strong>
+    </dt>
+    <dd>
+
+
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">ciphertext</span>
+        <li><span class="parameter">layer</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         The encrypted Lua script (binary).
-        </li>
-        <li><span class="parameter">iv</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         The 16-byte initialization vector (binary).
-        </li>
-        <li><span class="parameter">key</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         The 32-byte AES-256 key (binary).
+         "net" (default, L3) or "mac" (L2, includes MAC header)
+         (<em>optional</em>)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        The return values from the executed script.
+           <span class="types"><a class="type" href="../modules/skb.html#data">data</a></span>
+
+
+
     </ol>
 
     <h3>Raises:</h3>
-    Error if decryption fails or IV/key length is invalid.
+    if linearization fails, MAC header is not set, or layer is invalid
+
+
+
+</dd>
+    <dt>
+    <a name = "forward"></a>
+    <strong>forward ()</strong>
+    </dt>
+    <dd>
+    Forwards the skb out through its ingress device.
+
+
+
+
+    <h3>Raises:</h3>
+    if skb has no device, MAC header is not set, or clone fails
+
+
+
+</dd>
+    <dt>
+    <a name = "ifindex"></a>
+    <strong>ifindex ()</strong>
+    </dt>
+    <dd>
+
+
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        network interface index, or nil if not available
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "resize"></a>
+    <strong>resize (n)</strong>
+    </dt>
+    <dd>
+    Expands (skb<em>put) or shrinks (skb</em>trim) the skb data area.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">integer</span></span>
+         desired size in bytes
+        </li>
+    </ul>
+
+
+    <h3>Raises:</h3>
+    if insufficient tailroom for expansion
+
+
+
+</dd>
+    <dt>
+    <a name = "vlan"></a>
+    <strong>vlan ()</strong>
+    </dt>
+    <dd>
+
+
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        VLAN tag ID, or nil if not present
+    </ol>
+
 
 
 
