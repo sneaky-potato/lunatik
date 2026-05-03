@@ -61,6 +61,18 @@
   <li><a href="../modules/hid.html">hid</a></li>
   <li><a href="../modules/lighten.html">lighten</a></li>
   <li><a href="../modules/linux.html">linux</a></li>
+  <li><a href="../modules/linux.eth.html">linux.eth</a></li>
+  <li><a href="../modules/linux.kbd.html">linux.kbd</a></li>
+  <li><a href="../modules/linux.netdev.html">linux.netdev</a></li>
+  <li><a href="../modules/linux.nf.html">linux.nf</a></li>
+  <li><a href="../modules/linux.notify.html">linux.notify</a></li>
+  <li><a href="../modules/linux.signal.html">linux.signal</a></li>
+  <li><a href="../modules/linux.socket.html">linux.socket</a></li>
+  <li><a href="../modules/linux.stat.html">linux.stat</a></li>
+  <li><a href="../modules/linux.syscall.html">linux.syscall</a></li>
+  <li><a href="../modules/linux.task.html">linux.task</a></li>
+  <li><a href="../modules/linux.vt.html">linux.vt</a></li>
+  <li><a href="../modules/linux.xdp.html">linux.xdp</a></li>
   <li><a href="../modules/lunatik.html">lunatik</a></li>
   <li><a href="../modules/lunatik.runner.html">lunatik.runner</a></li>
   <li><a href="../modules/mailbox.html">mailbox</a></li>
@@ -105,7 +117,7 @@ a <a href="doc/capi.md">C API</a> to load and run scripts and manage runtime env
 and <a href="#lunatik-lua-apis">Lua APIs</a> for binding kernel facilities to Lua scripts.</p>
 
 <blockquote>
-    <p>Note: Lunatik supports Linux Kernel versions 5.x and 6.x</p>
+    <p>Note: Lunatik supports Linux Kernel versions 5.15 and later</p>
 </blockquote>
 
 <p>Feel free to join us on <a href="https://matrix.to/#/#lunatik:matrix.org">Matrix</a>.</p>
@@ -122,9 +134,9 @@ to generate random ASCII printable characters:</p>
 </span>
 <span class="keyword">local</span> device = <span class="global">require</span>(<span class="string">"device"</span>)
 <span class="keyword">local</span> linux  = <span class="global">require</span>(<span class="string">"linux"</span>)
+<span class="keyword">local</span> stat   = <span class="global">require</span>(<span class="string">"linux.stat"</span>)
 
-<span class="keyword">local</span> s = linux.stat
-<span class="keyword">local</span> driver = {name = <span class="string">"passwd"</span>, mode = s.IRUGO}
+<span class="keyword">local</span> driver = {name = <span class="string">"passwd"</span>, mode = stat.IRUGO}
 
 <span class="keyword">function</span> driver:<span class="function-name">read</span>() <span class="comment">-- read(2) callback
 </span> <span class="comment">-- generate random ASCII printable characters
@@ -188,7 +200,7 @@ compiled on kernel upgrade.</p>
 <h2>Usage</h2>
 
 <pre><code> sudo lunatik # execute Lunatik REPL
- Lunatik 4.2  Copyright (C) 2023-2026 Ring Zero Desenvolvimento de Software LTDA.
+ Lunatik 4.3  Copyright (C) 2023-2026 Ring Zero Desenvolvimento de Software LTDA.
  &gt; return 42 -- execute this line in the kernel
  42
 </code></pre>
@@ -209,7 +221,7 @@ usage: lunatik [<span class="global">load</span>|unload|reload|status|test|list]
     <li><code>status</code>: show which Lunatik kernel modules are currently loaded</li>
     <li><code>test [suite]</code>: run installed test suites (see <a href="#testing">Testing</a>)</li>
     <li><code>list</code>: show which runtime environments are currently running</li>
-    <li><code>run [softirq]</code>: create a new runtime environment to run the script <code>/lib/modules/lua/&lt;script&gt;.lua</code>; pass <code>softirq</code> for hooks that fire in atomic context (netfilter, XDP)</li>
+    <li><code>run [softirq|hardirq]</code>: create a new runtime environment to run the script <code>/lib/modules/lua/&lt;script&gt;.lua</code>; pass <code>softirq</code> for hooks that fire in softirq context (netfilter, XDP), or <code>hardirq</code> for hooks that fire in hardirq context (kprobes)</li>
     <li><code>spawn</code>: create a new runtime environment and spawn a thread to run the script <code>/lib/modules/lua/&lt;script&gt;.lua</code></li>
     <li><code>stop</code>: stop the runtime environment created to run the script <code>&lt;script&gt;</code></li>
     <li><code>default</code>: start a <em>REPL (Read–Eval–Print Loop)</em></li>
@@ -221,16 +233,22 @@ usage: lunatik [<span class="global">load</span>|unload|reload|status|test|list]
 
 
 <pre>
-sudo make tests_install
+sudo make install
 sudo lunatik test           # run all suites
-sudo lunatik test thread    # run a specific <span class="function-name">suite</span> (monitor, thread, runtime)
+sudo lunatik test thread    # run a specific <span class="function-name">suite</span> (crypto, <span class="global">io</span>, monitor,
+                            # notifier, probe, rcu, runtime, socket, thread)
 </pre>
 
+
+<p><code>lunatik test</code> reloads the modules before the run and unloads them
+afterwards, so each invocation exercises the currently-installed kernel
+code. See <a href="tests/README.md">tests/README.md</a> for the full list of suites
+and individual tests.</p>
 
 <p><a name="Lua_Version"></a></p>
 <h2>Lua Version</h2>
 
-<p>Lunatik 4.2 is based on
+<p>Lunatik 4.3 is based on
 <a href="https://github.com/luainkernel/lua">Lua 5.5 adapted</a>
 to run in the kernel.</p>
 
@@ -306,23 +324,24 @@ See <a href="doc/capi.md">doc/capi.md</a> for the full reference.</p>
 
 <h3>spyglass</h3>
 
-<p><a href="examples/spyglass.lua">spyglass</a>
+<p><a href="examples/spyglass">spyglass</a>
 is a kernel script that implements a <em>keylogger</em> inspired by the
 <a href="https://github.com/jarun/spy">spy</a> kernel module.
 This kernel script logs the <em>keysym</em> of the pressed keys in a device (<code>/dev/spyglass</code>).
 If the <em>keysym</em> is a printable character, <code>spyglass</code> logs the <em>keysym</em> itself;
 otherwise, it logs a mnemonic of the ASCII code, (e.g., <code>&lt;del&gt;</code> stands for <code>127</code>).</p>
 
+<p>The keyboard notifier fires in hardirq context, whereas the device requires
+process context; spyglass splits across two runtimes
+(<a href="examples/spyglass/device.lua"><code>device.lua</code></a> in process and
+<a href="examples/spyglass/notifier.lua"><code>notifier.lua</code></a> in hardirq) sharing captured
+chars via a <a href="lib/luafifo.c"><a href="../modules/fifo.html#">fifo</a></a>.</p>
+
 <h4>Usage</h4>
 
-<pre><code> sudo make examples_install          # installs examples
- sudo lunatik run examples/spyglass  # runs spyglass
- sudo tail -f /dev/spyglass          # prints the key log
- sudo sh -c "echo 'enable=false' &gt; /dev/spyglass"       # disable the key logging
- sudo sh -c "echo 'enable=true' &gt; /dev/spyglass"        # enable the key logging
- sudo sh -c "echo 'net=127.0.0.1:1337' &gt; /dev/spyglass" # enable network support
- nc -lu 127.0.0.1 1337 &amp;             # listen to UDP 127.0.0.1:1337
- sudo tail -f /dev/spyglass          # sends the key log through the network
+<pre><code> sudo make examples_install                 # installs examples
+ sudo lunatik run examples/spyglass/device  # runs spyglass
+ sudo tail -f /dev/spyglass                 # prints the key log
 </code></pre>
 
 
@@ -336,12 +355,15 @@ When the user types <code>↑ ↑ ↓ ↓ ← → ← → LCTRL LALT</code>,
 the keyboard will be <em>locked</em>; that is, the system will stop processing any key pressed
 until the user types the same key sequence again.</p>
 
+<p>The keyboard notifier fires in hardirq context, so keylocker must run in a
+<code>hardirq</code> runtime (passed as the third argument to <code>lunatik run</code>).</p>
+
 <h4>Usage</h4>
 
-<pre><code> sudo make examples_install                     # installs examples
- sudo lunatik run examples/keylocker            # runs keylocker
- &lt;↑&gt; &lt;↑&gt; &lt;↓&gt; &lt;↓&gt; &lt;←&gt; &lt;→&gt; &lt;←&gt; &lt;→&gt; &lt;LCTRL&gt; &lt;LALT&gt; # locks keyboard
- &lt;↑&gt; &lt;↑&gt; &lt;↓&gt; &lt;↓&gt; &lt;←&gt; &lt;→&gt; &lt;←&gt; &lt;→&gt; &lt;LCTRL&gt; &lt;LALT&gt; # unlocks keyboard
+<pre><code> sudo make examples_install                         # installs examples
+ sudo lunatik run examples/keylocker hardirq        # runs keylocker
+ &lt;↑&gt; &lt;↑&gt; &lt;↓&gt; &lt;↓&gt; &lt;←&gt; &lt;→&gt; &lt;←&gt; &lt;→&gt; &lt;LCTRL&gt; &lt;LALT&gt;     # locks keyboard
+ &lt;↑&gt; &lt;↑&gt; &lt;↓&gt; &lt;↓&gt; &lt;←&gt; &lt;→&gt; &lt;←&gt; &lt;→&gt; &lt;LCTRL&gt; &lt;LALT&gt;     # unlocks keyboard
 </code></pre>
 
 
@@ -397,24 +419,58 @@ is an echo server implemented as kernel scripts.</p>
 
 <h3>systrack</h3>
 
-<p><a href="examples/systrack.lua">systrack</a>
-is a kernel script that implements a device driver to monitor system calls.
-It prints the amount of times each <a href="examples/systrack.lua#L29">system call</a>
-was called since the driver has been installed.</p>
+<p><a href="examples/systrack/probe.lua">systrack</a>
+is a kernel script that uses kprobes to count every system call on the
+running architecture. <a href="examples/systrack/device.lua">systrack/device</a>
+exposes the live counters as a character device readable with <code>cat</code>.</p>
+
+<p>The device runtime creates the probe runtime via <code>runner.run</code>, passing the
+RCU counter table via <code>runtime:resume()</code>. Stopping the device runtime also
+stops the probe runtime.</p>
 
 <h4>Usage</h4>
 
-<pre><code> sudo make examples_install         # installs examples
- sudo lunatik run examples/systrack # runs systracker
+<pre><code> sudo make examples_install                            # installs examples
+ sudo lunatik run examples/systrack/device             # starts device and probe runtimes
  cat /dev/systrack
- writev: 0
- close: 1927
- write: 1085
- openat: 2036
- read: 4131
- readv: 0
+ close: 473
+ openat: 515
+ read: 1066
+ write: 438
+ sudo lunatik stop examples/systrack/device            # stops device and probe runtimes
 </code></pre>
 
+
+<h3>ifquarantine</h3>
+
+<p><a href="examples/ifquarantine">ifquarantine</a> composes two notifier chains to build
+an interface-level default-deny policy: every new network interface
+(NETDEV_REGISTER) is automatically added to a shared RCU set whose contents
+a netfilter hook uses to decide the verdict on each packet. An interface is
+released from quarantine by writing <code>allow=&lt;name&gt;</code> to <code>/dev/ifquarantine</code>;
+re-denied with <code>deny=&lt;name&gt;</code>; inspected with <code>cat /dev/ifquarantine</code>.</p>
+
+<p>The control runtime (process context) owns <a href="../modules/notifier.html#netdevice">notifier.netdevice</a> and the
+device; it spawns a child softirq runtime with the netfilter hook, sharing
+the quarantine set via <a href="../modules/rcu.html#table">rcu.table</a> through <code>runtime:resume()</code>. Illustrates
+cross-subsystem composition between two notifier chains of different
+execution contexts.</p>
+
+<h4>Usage</h4>
+
+<pre><code> sudo make examples_install                         # installs examples
+ sudo lunatik run examples/ifquarantine/control     # starts control+filter
+ sudo cat /dev/ifquarantine                         # lists known interfaces and verdict
+ sudo sh -c "echo 'allow=eth0' &gt; /dev/ifquarantine" # lift quarantine on eth0
+ sudo sh -c "echo 'deny=eth0'  &gt; /dev/ifquarantine" # re-apply quarantine
+ sudo lunatik stop examples/ifquarantine/control    # stops both runtimes
+</code></pre>
+
+
+<p>Pre-existing interfaces are covered as well: <code>register_netdevice_notifier</code>
+synchronously replays <code>NETDEV_REGISTER</code> (and <code>NETDEV_UP</code>) for each existing
+netdev when the notifier block is registered, so they enter quarantine at
+script start too.</p>
 
 <h3>filter</h3>
 
@@ -681,7 +737,7 @@ For more details, see its <a href="https://github.com/luainkernel/klibc/blob/lun
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2026-03-25 04:46:16 </i>
+<i style="float:right;">Last updated 2026-05-03 10:03:52 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

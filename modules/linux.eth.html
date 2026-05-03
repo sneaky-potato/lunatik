@@ -31,6 +31,10 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Tables">Tables</a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -47,7 +51,7 @@
   <li><a href="../modules/hid.html">hid</a></li>
   <li><a href="../modules/lighten.html">lighten</a></li>
   <li><a href="../modules/linux.html">linux</a></li>
-  <li><a href="../modules/linux.eth.html">linux.eth</a></li>
+  <li><strong>linux.eth</strong></li>
   <li><a href="../modules/linux.kbd.html">linux.kbd</a></li>
   <li><a href="../modules/linux.netdev.html">linux.netdev</a></li>
   <li><a href="../modules/linux.nf.html">linux.nf</a></li>
@@ -74,7 +78,7 @@
   <li><a href="../modules/socket.raw.html">socket.raw</a></li>
   <li><a href="../modules/socket.unix.html">socket.unix</a></li>
   <li><a href="../modules/syscall.html">syscall</a></li>
-  <li><strong>syscall.table</strong></li>
+  <li><a href="../modules/syscall.table.html">syscall.table</a></li>
   <li><a href="../modules/thread.html">thread</a></li>
   <li><a href="../modules/xdp.html">xdp</a></li>
 </ul>
@@ -96,37 +100,42 @@
 
 <div id="content">
 
-<h1>Module <code>syscall.table</code></h1>
-<p>A table mapping system call names to their kernel addresses.</p>
-<p> This module provides a pre-populated Lua table where each key
- is a system call name (string, e.g., "openat") and its corresponding
- value is the kernel address of that system call (lightuserdata).</p>
-    <h3>See also:</h3>
-    <ul>
-         <li><a href="../modules/syscall.html#">syscall</a></li>
-         <li><a href="../modules/linux.syscall.html#numbers">linux.syscall.numbers</a></li>
-         <li><a href="../modules/syscall.html#address">syscall.address</a></li>
-    </ul>
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">local syscall_addrs = require(&quot;syscall.table&quot;)
-
-if syscall_addrs.openat then
-  print(&quot;Address of &apos;openat&apos;:&quot;, syscall_addrs.openat)
-end
-
-if syscall_addrs.close then
-  print(&quot;Address of &apos;close&apos;:&quot;, syscall_addrs.close)
-end
-</pre>
-    </ul>
+<h1>Module <code>linux.eth</code></h1>
+<p>Linux kernel constants exposed under <a href="../modules/linux.eth.html#">linux.eth</a>.</p>
+<p> Values are populated at build time from the kernel headers.</p>
 
 
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#constants">constants</a></td>
+	<td class="summary">Ethernet protocol IDs.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "constants"></a>
+    <strong>constants</strong>
+    </dt>
+    <dd>
+    Ethernet protocol IDs.
+ Mirrors <code>ETH_P_*</code> defines in <code>&lt;uapi/linux/if_ether.h&gt;</code>.
+
+
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->

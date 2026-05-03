@@ -23,9 +23,13 @@ Describes a Lunatik object class.
 - `opt`: bitmask of `LUNATIK_OPT_*` flags controlling class behaviour. Flags are inherited by
   every instance via `object->opt = opt | class->opt` (see `lunatik_newobject`). Flags differ
   in whether they act as **constraints** or **capabilities**:
-  - `LUNATIK_OPT_SOFTIRQ` *(constraint)*: all instances use a spinlock and `GFP_ATOMIC`; absence
-    means mutex and `GFP_KERNEL`. Because this flag is always inherited, a SOFTIRQ class can never
-    produce a non-SOFTIRQ instance.
+  - `LUNATIK_OPT_SOFTIRQ` *(constraint)*: all instances use a spinlock with bottom-half disabling
+    (`spin_lock_bh`) and `GFP_ATOMIC`; absence means mutex and `GFP_KERNEL`. Use for classes whose
+    handlers fire in softirq context (netfilter, XDP). Because this flag is always inherited, a
+    SOFTIRQ class can never produce a non-SOFTIRQ instance.
+  - `LUNATIK_OPT_HARDIRQ` *(constraint)*: like `SOFTIRQ` but uses `spin_lock_irqsave`, which
+    disables hardware interrupts. Required for classes whose handlers fire in hardirq context
+    (e.g. kprobes).
   - `LUNATIK_OPT_MONITOR` *(capability)*: the class supports a monitored metatable that wraps Lua
     method calls with the object lock, enabling safe concurrent access from multiple runtimes.
     Inherited by default but cancelled when an instance is created with `LUNATIK_OPT_SINGLE`.
@@ -33,25 +37,6 @@ Describes a Lunatik object class.
     Like `SOFTIRQ`, this is always inherited and cannot be overridden per instance.
   - `LUNATIK_OPT_EXTERNAL` *(constraint)*: `object->private` holds an external pointer — Lunatik
     will not free it on release.
-
-### lunatik\_reg\_t
-```C
-typedef struct lunatik_reg_s {
-	const char  *name;
-	lua_Integer  value;
-} lunatik_reg_t;
-```
-A name–integer-value pair used to export constants to Lua. Arrays must be terminated by `{NULL, 0}`.
-
-### lunatik\_namespace\_t
-```C
-typedef struct lunatik_namespace_s {
-	const char          *name;
-	const lunatik_reg_t *reg;
-} lunatik_namespace_t;
-```
-A named table of `lunatik_reg_t` constants. Passed to `LUNATIK_NEWLIB` to create sub-tables
-in the module table (e.g., `netfilter.action`, `netfilter.family`). Terminated by `{NULL, NULL}`.
 
 ---
 
@@ -188,6 +173,16 @@ Returns `true` if the script associated with `L` has finished loading (i.e., the
 chunk has returned). Use this to guard operations that must not run during module
 initialization — for example, spawning a kernel thread from a `runner.spawn` callback.
 
+### lunatik\_checkruntime
+```C
+lunatik_object_t *lunatik_checkruntime(lua_State *L, lunatik_opt_t opt);
+```
+Returns the runtime associated with `L` and raises a Lua error if its context does not match
+`opt`. Context is determined by the SOFTIRQ/HARDIRQ bits: a SOFTIRQ class must run in a
+`softirq` runtime, a HARDIRQ class in a `hardirq` runtime, and a process-context class in a
+process runtime. Typically called from `lunatik_new*` functions to enforce that a class is
+only instantiated in a compatible runtime.
+
 ---
 
 ## Object Lifecycle
@@ -200,7 +195,7 @@ _lunatik\_newobject()_ allocates a new Lunatik object and pushes a userdata
 containing a pointer to the object onto the Lua stack.
 
 `object->opt` is computed as `opt | class->opt`: all class flags are inherited by the instance.
-`opt` may add flags on top (e.g. `LUNATIK_OPT_SOFTIRQ` for a non-sleepable runtime instance).
+`opt` may add flags on top (e.g. `LUNATIK_OPT_SOFTIRQ` or `LUNATIK_OPT_HARDIRQ` for a non-sleepable runtime instance).
 
 - Pass `LUNATIK_OPT_MONITOR` to wrap method calls with the object lock, enabling safe concurrent
   access from multiple runtimes.
@@ -404,26 +399,68 @@ truncated to `maxlen` bytes. Raises a Lua error if the field is missing or not a
 ```C
 #define LUNATIK_CLASSES(name, ...)
 ```
-Declares a NULL-terminated `const lunatik_class_t *` array named `lua<name>_classes`,
-to be passed as the `classes` argument of `LUNATIK_NEWLIB`.
+Declares a `static const lunatik_class_t *` array of class pointers with an
+implicit trailing `NULL` sentinel. The array is named `lua<name>_classes` —
+the same token used in `LUNATIK_NEWLIB(<name>, ..., lua<name>_classes, ...)`,
+so both macros compose without the author naming the array explicitly.
 
-- `name`: module name suffix (same token used in `LUNATIK_NEWLIB`).
-- `...`: one or more `lunatik_class_t *` pointers.
+- `name`: module name suffix; must match the `libname` of the companion
+  `LUNATIK_NEWLIB` call.
+- `...`: one or more `const lunatik_class_t *` pointers. The macro appends
+  the terminator, so authors must **not** include a trailing `NULL`.
+
+A module may list classes with different execution contexts (e.g. a HARDIRQ
+class alongside a process-context class) in the same array; see the note
+under [`LUNATIK_NEWLIB`](#lunatik_newlib) for how context enforcement is
+handled at object creation.
+
+#### When to use
+
+Prefer `LUNATIK_CLASSES` for the common case of a fixed class list: it
+removes boilerplate, enforces the `static const` qualifiers, and makes
+forgetting the `NULL` sentinel impossible.
+
+Write the array out by hand when any item is guarded by a preprocessor
+directive — `#if`/`#endif` inside a macro argument list is undefined
+behavior in C99 (§6.10.3/11), so the helper cannot express conditional
+inclusion:
+
+```C
+static const lunatik_class_t *luafoo_classes[] = {
+	&luafoo_class,
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 15, 0))
+	&luafoo_legacy_class,
+#endif
+	NULL
+};
+LUNATIK_NEWLIB(foo, luafoo_lib, luafoo_classes);
+```
+
+The naming convention (`lua<libname>_classes`) is a convention of the helper,
+not a requirement of `LUNATIK_NEWLIB`: any NULL-terminated array works.
 
 ### LUNATIK\_NEWLIB
 ```C
-#define LUNATIK_NEWLIB(libname, funcs, classes, namespaces)
+#define LUNATIK_NEWLIB(libname, funcs, classes)
 ```
 Defines and exports the `luaopen_<libname>` entry point using `EXPORT_SYMBOL_GPL`.
 
 - `funcs`: `luaL_Reg[]` of Lua-callable functions (the module table).
 - `classes`: NULL-terminated `const lunatik_class_t **` array declared with
   `LUNATIK_CLASSES`, or `NULL` if the module defines no object type.
-- `namespaces`: `lunatik_namespace_t[]` of constant sub-tables, or `NULL`.
 
 When `classes != NULL`, `LUNATIK_NEWLIB` registers the metatable(s) for every
-class in the array. When `namespaces != NULL`, it creates constant sub-tables
-inside the module table.
+class in the array.
+
+Metatable registration is context-agnostic: a module may expose classes of
+different execution contexts (e.g. a HARDIRQ class alongside a process-context
+class) and `luaopen_<libname>` succeeds in any runtime. Context enforcement
+happens later, at object creation time — `lunatik_newobject` rejects a
+process-context class in an IRQ runtime, and each constructor should call
+[`lunatik_checkruntime`](#lunatik_checkruntime) to reject exact mismatches
+(e.g. a SOFTIRQ class in a HARDIRQ runtime). This lets a single module serve
+runtimes of different contexts: each runtime sees every class registered, but
+can only instantiate the ones whose context matches its own.
 
 #### Example — single class
 ```C
@@ -433,14 +470,29 @@ static const luaL_Reg luafoo_lib[] = {
 };
 
 LUNATIK_CLASSES(foo, &luafoo_class);
-LUNATIK_NEWLIB(foo, luafoo_lib, luafoo_classes, NULL);
+LUNATIK_NEWLIB(foo, luafoo_lib, luafoo_classes);
 ```
 
-#### Example — multiple classes
+#### Example — multiple classes, different contexts
 ```C
-LUNATIK_CLASSES(foo, &luafoo_class, &luafoo_bar_class);
-LUNATIK_NEWLIB(foo, luafoo_lib, luafoo_classes, NULL);
+static const lunatik_class_t luafoo_process_class = {
+	.name = "foo", .methods = luafoo_mt, .release = luafoo_release,
+	.opt = LUNATIK_OPT_SINGLE,
+};
+
+static const lunatik_class_t luafoo_hardirq_class = {
+	.name = "foo", .methods = luafoo_mt, .release = luafoo_release,
+	.opt = LUNATIK_OPT_HARDIRQ | LUNATIK_OPT_SINGLE,
+};
+
+LUNATIK_CLASSES(foo, &luafoo_process_class, &luafoo_hardirq_class);
+LUNATIK_NEWLIB(foo, luafoo_lib, luafoo_classes);
 ```
+
+`require("foo")` succeeds in any runtime — both metatables are registered.
+Each class can only be instantiated from a runtime whose context matches
+its `opt`; the constructor enforces this via
+[`lunatik_checkruntime`](#lunatik_checkruntime).
 
 ---
 

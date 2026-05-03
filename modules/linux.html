@@ -34,7 +34,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
-<li><a href="#Tables">Tables</a></li>
 </ul>
 
 
@@ -52,6 +51,18 @@
   <li><a href="../modules/hid.html">hid</a></li>
   <li><a href="../modules/lighten.html">lighten</a></li>
   <li><strong>linux</strong></li>
+  <li><a href="../modules/linux.eth.html">linux.eth</a></li>
+  <li><a href="../modules/linux.kbd.html">linux.kbd</a></li>
+  <li><a href="../modules/linux.netdev.html">linux.netdev</a></li>
+  <li><a href="../modules/linux.nf.html">linux.nf</a></li>
+  <li><a href="../modules/linux.notify.html">linux.notify</a></li>
+  <li><a href="../modules/linux.signal.html">linux.signal</a></li>
+  <li><a href="../modules/linux.socket.html">linux.socket</a></li>
+  <li><a href="../modules/linux.stat.html">linux.stat</a></li>
+  <li><a href="../modules/linux.syscall.html">linux.syscall</a></li>
+  <li><a href="../modules/linux.task.html">linux.task</a></li>
+  <li><a href="../modules/linux.vt.html">linux.vt</a></li>
+  <li><a href="../modules/linux.xdp.html">linux.xdp</a></li>
   <li><a href="../modules/lunatik.html">lunatik</a></li>
   <li><a href="../modules/lunatik.runner.html">lunatik.runner</a></li>
   <li><a href="../modules/mailbox.html">mailbox</a></li>
@@ -107,7 +118,7 @@
 	<td class="summary">Returns the symbolic name of a kernel error number.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ifaddr">ifaddr (The)</a></td>
+	<td class="name" nowrap><a href="#ifaddr">ifaddr (ifindex)</a></td>
 	<td class="summary">Gets the HW address for the network interface index.</td>
 	</tr>
 	<tr>
@@ -135,13 +146,6 @@
 	<td class="summary">Controls kernel tracing.</td>
 	</tr>
 </table>
-<h2><a href="#Tables">Tables</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#task">task</a></td>
-	<td class="summary">Table of task state constants.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
@@ -162,11 +166,11 @@
     <ul>
         <li><span class="parameter">t2</span>
             <span class="types"><span class="type">integer</span></span>
-         The later timestamp (e.g., from <code>linux.time()</code>).
+         later timestamp (e.g., from <code>linux.time()</code>).
         </li>
         <li><span class="parameter">t1</span>
             <span class="types"><span class="type">integer</span></span>
-         The earlier timestamp (e.g., from <code>linux.time()</code>).
+         earlier timestamp (e.g., from <code>linux.time()</code>).
         </li>
     </ul>
 
@@ -174,7 +178,7 @@
     <ol>
 
            <span class="types"><span class="type">integer</span></span>
-        The difference <code>t2 - t1</code> in nanoseconds.
+        difference <code>t2 - t1</code> in nanoseconds.
     </ol>
 
 
@@ -194,7 +198,7 @@
     <ul>
         <li><span class="parameter">err</span>
             <span class="types"><span class="type">integer</span></span>
-         The error number (e.g., 2).
+         error number (e.g., 2).
         </li>
     </ul>
 
@@ -202,7 +206,7 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-        The symbolic name of the error (e.g., "ENOENT").
+        symbolic error name (e.g., "ENOENT").
  Returns "unknown" (or the error number as a string) if the name cannot be resolved.
     </ol>
 
@@ -217,7 +221,7 @@
 </dd>
     <dt>
     <a name = "ifaddr"></a>
-    <strong>ifaddr (The)</strong>
+    <strong>ifaddr (ifindex)</strong>
     </dt>
     <dd>
     Gets the HW address for the network interface index.
@@ -225,7 +229,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">The</span>
+        <li><span class="parameter">ifindex</span>
             <span class="types"><span class="type">integer</span></span>
          interface index number.
         </li>
@@ -235,7 +239,7 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-        The interface HW address.
+        interface HW address.
     </ol>
 
     <h3>Raises:</h3>
@@ -261,7 +265,7 @@
     <ul>
         <li><span class="parameter">interface_name</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         The name of the network interface (e.g., "eth0").
+         network interface name (e.g., "eth0").
         </li>
     </ul>
 
@@ -269,7 +273,7 @@
     <ol>
 
            <span class="types"><span class="type">integer</span></span>
-        The interface index.
+        interface index.
     </ol>
 
     <h3>Raises:</h3>
@@ -297,7 +301,7 @@
     <ul>
         <li><span class="parameter">symbol_name</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         The name of the kernel symbol to look up.
+         kernel symbol name to look up.
         </li>
     </ul>
 
@@ -305,7 +309,7 @@
     <ol>
 
            <span class="types"><span class="type">lightuserdata</span></span>
-        The address of the symbol if found, otherwise <code>nil</code> (represented as a NULL lightuserdata).
+        symbol address if found, otherwise <code>nil</code> (represented as a NULL lightuserdata).
     </ol>
 
 
@@ -383,8 +387,8 @@
         </li>
         <li><span class="parameter">state</span>
             <span class="types"><span class="type">integer</span></span>
-         The task state to set before sleeping.
- See <a href="../modules/linux.html#task">linux.task</a> for possible values. Defaults to <code>linux.task.INTERRUPTIBLE</code>.
+         task state to set before sleeping.
+ See <a href="../modules/linux.task.html#">linux.task</a> for possible values. Defaults to <code>TASK_INTERRUPTIBLE</code>.
          (<em>optional</em>)
         </li>
     </ul>
@@ -393,22 +397,19 @@
     <ol>
 
            <span class="types"><span class="type">integer</span></span>
-        The remaining time in milliseconds
+        remaining time in milliseconds
  if the sleep was interrupted before the full timeout, or 0 if the full timeout elapsed.
     </ol>
 
     <h3>Raises:</h3>
     Error if an invalid task state is provided.
 
-    <h3>See also:</h3>
-    <ul>
-         <a href="../modules/linux.html#task">linux.task</a>
-    </ul>
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">linux.<span class="function-name">schedule</span>(<span class="number">1000</span>) <span class="comment">-- Sleep for 1 second (interruptible)
-</span>linux.<span class="function-name">schedule</span>(<span class="number">500</span>, linux.task.UNINTERRUPTIBLE) <span class="comment">-- Sleep for 0.5 seconds (uninterruptible)</span></pre>
+        <pre class="example"><span class="keyword">local</span> task = <span class="global">require</span>(<span class="string">"linux.task"</span>)
+linux.<span class="function-name">schedule</span>(<span class="number">1000</span>) <span class="comment">-- Sleep for 1 second (interruptible)
+</span>linux.<span class="function-name">schedule</span>(<span class="number">500</span>, task.UNINTERRUPTIBLE) <span class="comment">-- Sleep for 0.5 seconds (uninterruptible)</span></pre>
     </ul>
 
 </dd>
@@ -425,7 +426,7 @@
     <ol>
 
            <span class="types"><span class="type">integer</span></span>
-        The current time in nanoseconds since the epoch (from <code>ktime_get_real_ns</code>).
+        current time in nanoseconds since the epoch (from <code>ktime_get_real_ns</code>).
     </ol>
 
 
@@ -455,7 +456,7 @@
     <ol>
 
            <span class="types"><span class="type">boolean</span></span>
-        The current state of kernel tracing (<code>true</code> if on, <code>false</code> if off) <em>after</em> any change.
+        current kernel tracing state (<code>true</code> if on, <code>false</code> if off) <em>after</em> any change.
     </ol>
 
 
@@ -470,57 +471,13 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "task"></a>
-    <strong>task</strong>
-    </dt>
-    <dd>
-    Table of task state constants.
- Exports task state flags from <code>&lt;linux/sched.h&gt;</code>. These are used with
- <code>linux.schedule()</code>.
-
-
-    <h3>Fields:</h3>
-    <ul>
-        <li><span class="parameter">INTERRUPTIBLE</span>
-            <span class="types"><span class="type">integer</span></span>
-         Task is waiting for a signal or a resource (sleeping), can be interrupted.
-        </li>
-        <li><span class="parameter">UNINTERRUPTIBLE</span>
-            <span class="types"><span class="type">integer</span></span>
-         Task is waiting (sleeping),
-   cannot be interrupted by signals (except fatal ones if KILLABLE is also implied by context).
-        </li>
-        <li><span class="parameter">KILLABLE</span>
-            <span class="types"><span class="type">integer</span></span>
-         Task is waiting (sleeping) like UNINTERRUPTIBLE, but can be interrupted by fatal signals.
-        </li>
-        <li><span class="parameter">IDLE</span>
-            <span class="types"><span class="type">integer</span></span>
-         Task is idle, similar to UNINTERRUPTIBLE but avoids loadavg accounting.
-        </li>
-    </ul>
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <a href="../modules/linux.html#schedule">linux.schedule</a>
-    </ul>
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2026-03-25 04:46:16 </i>
+<i style="float:right;">Last updated 2026-05-03 10:03:52 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
