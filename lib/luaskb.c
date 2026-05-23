@@ -195,6 +195,34 @@ static int luaskb_forward(lua_State *L)
 	return 0;
 }
 
+static int luaskb_getmark(lua_State *L)
+{
+	luaskb_t *lskb = luaskb_check(L, 1);
+	lua_pushinteger(L, lskb->skb->mark);
+	return 1;
+}
+
+static int luaskb_setmark(lua_State *L)
+{
+	luaskb_t *lskb = luaskb_check(L, 1);
+	lskb->skb->mark = (u32)luaL_checkinteger(L, 2);
+	return 0;
+}
+
+static int luaskb_getpriority(lua_State *L)
+{
+	luaskb_t *lskb = luaskb_check(L, 1);
+	lua_pushinteger(L, lskb->skb->priority);
+	return 1;
+}
+
+static int luaskb_setpriority(lua_State *L)
+{
+	luaskb_t *lskb = luaskb_check(L, 1);
+	lskb->skb->priority = (u32)luaL_checkinteger(L, 2);
+	return 0;
+}
+
 static int luaskb_copy(lua_State *L);
 
 static void luaskb_release(void *private)
@@ -211,17 +239,22 @@ static const luaL_Reg luaskb_lib[] = {
 };
 
 static const luaL_Reg luaskb_mt[] = {
-	{"__gc",     lunatik_deleteobject},
-	{"__len",    luaskb_len},
-	{"ifindex",  luaskb_ifindex},
-	{"vlan",     luaskb_vlan},
-	{"data",     luaskb_data},
-	{"resize",   luaskb_resize},
-	{"checksum", luaskb_checksum},
-	{"forward",  luaskb_forward},
-	{"copy",     luaskb_copy},
+	{"__gc",        lunatik_deleteobject},
+	{"__len",       luaskb_len},
+	{"ifindex",     luaskb_ifindex},
+	{"vlan",        luaskb_vlan},
+	{"data",        luaskb_data},
+	{"resize",      luaskb_resize},
+	{"checksum",    luaskb_checksum},
+	{"forward",     luaskb_forward},
+	{"copy",        luaskb_copy},
+	{"getmark",     luaskb_getmark},
+	{"getpriority", luaskb_getpriority},
+	{"setmark",     luaskb_setmark},
+	{"setpriority", luaskb_setpriority},
 	{NULL, NULL}
 };
+
 
 LUNATIK_OPENER(skb);
 static const lunatik_class_t luaskb_class = {
