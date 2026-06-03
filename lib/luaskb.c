@@ -195,33 +195,49 @@ static int luaskb_forward(lua_State *L)
 	return 0;
 }
 
-static int luaskb_getmark(lua_State *L)
-{
-	luaskb_t *lskb = luaskb_check(L, 1);
-	lua_pushinteger(L, lskb->skb->mark);
-	return 1;
+#define luaskb_getinteger(name, field) \
+static int luaskb_get##name(lua_State *l) \
+{ \
+	luaskb_t *lskb = luaskb_check(l, 1); \
+	lua_pushinteger(l, lskb->skb->field); \
+	return 1; \
 }
 
-static int luaskb_setmark(lua_State *L)
-{
-	luaskb_t *lskb = luaskb_check(L, 1);
-	lskb->skb->mark = (u32)luaL_checkinteger(L, 2);
-	return 0;
+#define luaskb_setinteger(name, field) \
+static int luaskb_set##name(lua_State *l) \
+{ \
+	luaskb_t *lskb = luaskb_check(l, 1); \
+	lskb->skb->field = (u32)luaL_checkinteger(l, 2); \
+	return 0; \
 }
 
-static int luaskb_getpriority(lua_State *L)
-{
-	luaskb_t *lskb = luaskb_check(L, 1);
-	lua_pushinteger(L, lskb->skb->priority);
-	return 1;
-}
+/***
+* Gets the packet mark.
+* @function getmark
+* @return skb->mark
+*/
+luaskb_getinteger(mark, mark);
 
-static int luaskb_setpriority(lua_State *L)
-{
-	luaskb_t *lskb = luaskb_check(L, 1);
-	lskb->skb->priority = (u32)luaL_checkinteger(L, 2);
-	return 0;
-}
+/***
+* Sets the packet mark.
+* @function setmark
+* @param mark New packet mark value
+*/
+luaskb_setinteger(mark, mark);
+
+/***
+* Gets the packet priority.
+* @function getpriority
+* @return skb->priority
+*/
+luaskb_getinteger(priority, priority);
+
+/***
+* Sets the packet priority.
+* @function setpriority
+* @param priority New packet priority value
+*/
+luaskb_setinteger(priority, priority);
 
 static int luaskb_copy(lua_State *L);
 
