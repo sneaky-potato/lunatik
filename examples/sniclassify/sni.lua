@@ -1,7 +1,8 @@
 --
--- SPDX-FileCopyrightText: (c) 2025-2026 Ashwani Kumar Kamal <ashwanikamal.im421@gmail.com>
+-- SPDX-FileCopyrightText: (c) 2024-2026 Ring Zero Desenvolvimento de Software LTDA
 -- SPDX-License-Identifier: MIT OR GPL-2.0-only
 --
+-- Based on https://github.com/luainkernel/lunatik/blob/master/examples/filter/sni.lua
 
 local tc      = require("tc")
 local action  = require("linux.tc")
