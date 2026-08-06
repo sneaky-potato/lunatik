@@ -33,30 +33,37 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_socket">Class socket </a></li>
 <li><a href="#socket">socket</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/bpf.html">bpf</a></li>
+  <li><a href="../modules/bpf.map.html">bpf.map</a></li>
   <li><a href="../modules/byteorder.html">byteorder</a></li>
+  <li><a href="../modules/class.html">class</a></li>
   <li><a href="../modules/completion.html">completion</a></li>
   <li><a href="../modules/cpu.html">cpu</a></li>
   <li><a href="../modules/crypto.html">crypto</a></li>
   <li><a href="../modules/darken.html">darken</a></li>
   <li><a href="../modules/data.html">data</a></li>
   <li><a href="../modules/device.html">device</a></li>
-  <li><a href="../modules/fib.html">fib</a></li>
   <li><a href="../modules/fifo.html">fifo</a></li>
   <li><a href="../modules/hid.html">hid</a></li>
   <li><a href="../modules/lighten.html">lighten</a></li>
   <li><a href="../modules/linux.html">linux</a></li>
+  <li><a href="../modules/linux.bpf.html">linux.bpf</a></li>
   <li><a href="../modules/linux.eth.html">linux.eth</a></li>
+  <li><a href="../modules/linux.genl.html">linux.genl</a></li>
   <li><a href="../modules/linux.kbd.html">linux.kbd</a></li>
   <li><a href="../modules/linux.netdev.html">linux.netdev</a></li>
+  <li><a href="../modules/linux.netlink.html">linux.netlink</a></li>
   <li><a href="../modules/linux.nf.html">linux.nf</a></li>
+  <li><a href="../modules/linux.nl80211.html">linux.nl80211</a></li>
   <li><a href="../modules/linux.notify.html">linux.notify</a></li>
+  <li><a href="../modules/linux.rtnetlink.html">linux.rtnetlink</a></li>
   <li><a href="../modules/linux.signal.html">linux.signal</a></li>
   <li><a href="../modules/linux.socket.html">linux.socket</a></li>
   <li><a href="../modules/linux.stat.html">linux.stat</a></li>
@@ -69,15 +76,32 @@
   <li><a href="../modules/mailbox.html">mailbox</a></li>
   <li><a href="../modules/net.html">net</a></li>
   <li><a href="../modules/netfilter.html">netfilter</a></li>
+  <li><a href="../modules/netlink.html">netlink</a></li>
+  <li><a href="../modules/netlink.channel.html">netlink.channel</a></li>
+  <li><a href="../modules/netlink.genl.html">netlink.genl</a></li>
+  <li><a href="../modules/netlink.message.html">netlink.message</a></li>
+  <li><a href="../modules/netlink.nl80211.html">netlink.nl80211</a></li>
+  <li><a href="../modules/netlink.nl80211.interface.html">netlink.nl80211.interface</a></li>
+  <li><a href="../modules/netlink.nl80211.object.html">netlink.nl80211.object</a></li>
+  <li><a href="../modules/netlink.nl80211.wiphy.html">netlink.nl80211.wiphy</a></li>
+  <li><a href="../modules/netlink.rt.html">netlink.rt</a></li>
+  <li><a href="../modules/netlink.rt.addr.html">netlink.rt.addr</a></li>
+  <li><a href="../modules/netlink.rt.link.html">netlink.rt.link</a></li>
+  <li><a href="../modules/netlink.rt.object.html">netlink.rt.object</a></li>
+  <li><a href="../modules/netlink.rt.route.html">netlink.rt.route</a></li>
+  <li><a href="../modules/netlink.rt.rule.html">netlink.rt.rule</a></li>
+  <li><a href="../modules/netlink.session.html">netlink.session</a></li>
   <li><a href="../modules/notifier.html">notifier</a></li>
   <li><a href="../modules/probe.html">probe</a></li>
   <li><a href="../modules/rcu.html">rcu</a></li>
+  <li><a href="../modules/set.html">set</a></li>
   <li><a href="../modules/signal.html">signal</a></li>
   <li><a href="../modules/skb.html">skb</a></li>
   <li><strong>socket</strong></li>
   <li><a href="../modules/socket.inet.html">socket.inet</a></li>
   <li><a href="../modules/socket.raw.html">socket.raw</a></li>
   <li><a href="../modules/socket.unix.html">socket.unix</a></li>
+  <li><a href="../modules/struct.html">struct</a></li>
   <li><a href="../modules/syscall.html">syscall</a></li>
   <li><a href="../modules/syscall.table.html">syscall.table</a></li>
   <li><a href="../modules/thread.html">thread</a></li>
@@ -121,43 +145,47 @@
     </ul>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Class_socket">Class socket </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#accept">accept (self[, flags=0])</a></td>
+	<td class="name" nowrap><a href="#socket:accept">socket:accept (self[, flags=0])</a></td>
 	<td class="summary">Accepts a connection on a listening socket.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#bind">bind (addr[, port])</a></td>
+	<td class="name" nowrap><a href="#socket:bind">socket:bind (addr[, port])</a></td>
 	<td class="summary">Binds the socket to a local address.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#close">close ()</a></td>
+	<td class="name" nowrap><a href="#socket:close">socket:close ()</a></td>
 	<td class="summary">Closes the socket.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#connect">connect (addr[, port[, flags=0]])</a></td>
+	<td class="name" nowrap><a href="#socket:connect">socket:connect (addr[, port[, flags=0]])</a></td>
 	<td class="summary">Initiates a connection on a socket.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getpeername">getpeername ()</a></td>
+	<td class="name" nowrap><a href="#socket:getpeername">socket:getpeername ()</a></td>
 	<td class="summary">Gets the address of the peer to which the socket is connected.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getsockname">getsockname ()</a></td>
+	<td class="name" nowrap><a href="#socket:getsockname">socket:getsockname ()</a></td>
 	<td class="summary">Gets the local address to which the socket is bound.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#listen">listen ([backlog])</a></td>
+	<td class="name" nowrap><a href="#socket:listen">socket:listen ([backlog])</a></td>
 	<td class="summary">Puts a connection-oriented socket into the listening state.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#receive">receive (length[, flags=0[, from=false]])</a></td>
+	<td class="name" nowrap><a href="#socket:receive">socket:receive (length[, flags=0[, from=false]])</a></td>
 	<td class="summary">Receives a message from the socket.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#send">send (message[, addr[, port]])</a></td>
+	<td class="name" nowrap><a href="#socket:send">socket:send (message[, addr[, port]])</a></td>
 	<td class="summary">Sends a message through the socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#socket:setsockopt">socket:setsockopt (level, optname, value)</a></td>
+	<td class="summary">Sets a socket option.</td>
 	</tr>
 </table>
 <h2><a href="#socket">socket</a></h2>
@@ -172,12 +200,15 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header has-description"><a name="Class_socket"></a>Class socket </h2>
 
+          <div class="section-description">
+          A kernel socket, returned by <code>socket.new()</code>.
+          </div>
     <dl class="function">
     <dt>
-    <a name = "accept"></a>
-    <strong>accept (self[, flags=0])</strong>
+    <a name = "socket:accept"></a>
+    <strong>socket:accept (self[, flags=0])</strong>
     </dt>
     <dd>
     Accepts a connection on a listening socket.
@@ -188,7 +219,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">socket</span></span>
+            <span class="types"><a class="type" href="../modules/socket.html#socket">socket</a></span>
          listening socket object.
         </li>
         <li><span class="parameter">flags</span>
@@ -202,7 +233,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">socket</span></span>
+           <span class="types"><a class="type" href="../modules/socket.html#socket">socket</a></span>
         A new socket object representing the accepted connection.
     </ol>
 
@@ -213,8 +244,8 @@
 
 </dd>
     <dt>
-    <a name = "bind"></a>
-    <strong>bind (addr[, port])</strong>
+    <a name = "socket:bind"></a>
+    <strong>socket:bind (addr[, port])</strong>
     </dt>
     <dd>
     Binds the socket to a local address.
@@ -279,8 +310,8 @@
 
 </dd>
     <dt>
-    <a name = "close"></a>
-    <strong>close ()</strong>
+    <a name = "socket:close"></a>
+    <strong>socket:close ()</strong>
     </dt>
     <dd>
     Closes the socket.
@@ -305,13 +336,13 @@
 
 </dd>
     <dt>
-    <a name = "connect"></a>
-    <strong>connect (addr[, port[, flags=0]])</strong>
+    <a name = "socket:connect"></a>
+    <strong>socket:connect (addr[, port[, flags=0]])</strong>
     </dt>
     <dd>
     Initiates a connection on a socket.
  This is typically used by client sockets to establish a connection to a server.
- For datagram sockets, this sets the default destination address for <a href="../modules/socket.html#send">send</a> and
+ For datagram sockets, this sets the default destination address for <a href="../modules/socket.html#socket:send">send</a> and
  the only address from which datagrams are received.
 
 
@@ -362,8 +393,8 @@
 
 </dd>
     <dt>
-    <a name = "getpeername"></a>
-    <strong>getpeername ()</strong>
+    <a name = "socket:getpeername"></a>
+    <strong>socket:getpeername ()</strong>
     </dt>
     <dd>
     Gets the address of the peer to which the socket is connected.
@@ -402,8 +433,8 @@
 
 </dd>
     <dt>
-    <a name = "getsockname"></a>
-    <strong>getsockname ()</strong>
+    <a name = "socket:getsockname"></a>
+    <strong>socket:getsockname ()</strong>
     </dt>
     <dd>
     Gets the local address to which the socket is bound.
@@ -439,8 +470,8 @@
 
 </dd>
     <dt>
-    <a name = "listen"></a>
-    <strong>listen ([backlog])</strong>
+    <a name = "socket:listen"></a>
+    <strong>socket:listen ([backlog])</strong>
     </dt>
     <dd>
     Puts a connection-oriented socket into the listening state.
@@ -478,8 +509,8 @@
 
 </dd>
     <dt>
-    <a name = "receive"></a>
-    <strong>receive (length[, flags=0[, from=false]])</strong>
+    <a name = "socket:receive"></a>
+    <strong>socket:receive (length[, flags=0[, from=false]])</strong>
     </dt>
     <dd>
     Receives a message from the socket.
@@ -542,8 +573,8 @@
 
 </dd>
     <dt>
-    <a name = "send"></a>
-    <strong>send (message[, addr[, port]])</strong>
+    <a name = "socket:send"></a>
+    <strong>socket:send (message[, addr[, port]])</strong>
     </dt>
     <dd>
     Sends a message through the socket. </p>
@@ -605,6 +636,46 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "socket:setsockopt"></a>
+    <strong>socket:setsockopt (level, optname, value)</strong>
+    </dt>
+    <dd>
+    Sets a socket option.
+ <code>SOL_SOCKET</code> options are handled by the network core; any other level is
+ passed to the socket's protocol handler, mirroring the <code>setsockopt(2)</code>
+ routing.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">level</span>
+            <span class="types"><span class="type">integer</span></span>
+         option level (e.g., <code>linux.socket.sol.SOCKET</code>).
+        </li>
+        <li><span class="parameter">optname</span>
+            <span class="types"><span class="type">integer</span></span>
+         option name (e.g., <code>linux.socket.so.RCVTIMEO_NEW</code>).
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">integer</span> or <a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         option value: an integer for the common <code>int</code>
+   payload, or a string carrying the option's packed binary payload.
+        </li>
+    </ul>
+
+
+    <h3>Raises:</h3>
+    Error if the operation fails.
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- bound blocking receives to 500 ms (a <code>struct __kernel_sock_timeval</code>)
+</span>sock:<span class="function-name">setsockopt</span>(sol.SOCKET, so.RCVTIMEO_NEW, timeval:<span class="function-name">pack</span>(<span class="number">0</span>, <span class="number">500000</span>))</pre>
+    </ul>
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="socket"></a>socket</h2>
 
@@ -639,7 +710,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">socket</span></span>
+           <span class="types"><a class="type" href="../modules/socket.html#socket">socket</a></span>
         A new socket object.
     </ol>
 
@@ -667,7 +738,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2026-05-11 17:43:39 </i>
+<i style="float:right;">Last updated 2026-08-06 13:37:47 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

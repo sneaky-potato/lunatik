@@ -39,23 +39,30 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/bpf.html">bpf</a></li>
+  <li><a href="../modules/bpf.map.html">bpf.map</a></li>
   <li><a href="../modules/byteorder.html">byteorder</a></li>
+  <li><a href="../modules/class.html">class</a></li>
   <li><a href="../modules/completion.html">completion</a></li>
   <li><a href="../modules/cpu.html">cpu</a></li>
   <li><a href="../modules/crypto.html">crypto</a></li>
   <li><a href="../modules/darken.html">darken</a></li>
   <li><a href="../modules/data.html">data</a></li>
   <li><a href="../modules/device.html">device</a></li>
-  <li><a href="../modules/fib.html">fib</a></li>
   <li><a href="../modules/fifo.html">fifo</a></li>
   <li><a href="../modules/hid.html">hid</a></li>
   <li><a href="../modules/lighten.html">lighten</a></li>
   <li><a href="../modules/linux.html">linux</a></li>
+  <li><a href="../modules/linux.bpf.html">linux.bpf</a></li>
   <li><a href="../modules/linux.eth.html">linux.eth</a></li>
+  <li><a href="../modules/linux.genl.html">linux.genl</a></li>
   <li><a href="../modules/linux.kbd.html">linux.kbd</a></li>
   <li><a href="../modules/linux.netdev.html">linux.netdev</a></li>
+  <li><a href="../modules/linux.netlink.html">linux.netlink</a></li>
   <li><strong>linux.nf</strong></li>
+  <li><a href="../modules/linux.nl80211.html">linux.nl80211</a></li>
   <li><a href="../modules/linux.notify.html">linux.notify</a></li>
+  <li><a href="../modules/linux.rtnetlink.html">linux.rtnetlink</a></li>
   <li><a href="../modules/linux.signal.html">linux.signal</a></li>
   <li><a href="../modules/linux.socket.html">linux.socket</a></li>
   <li><a href="../modules/linux.stat.html">linux.stat</a></li>
@@ -68,15 +75,32 @@
   <li><a href="../modules/mailbox.html">mailbox</a></li>
   <li><a href="../modules/net.html">net</a></li>
   <li><a href="../modules/netfilter.html">netfilter</a></li>
+  <li><a href="../modules/netlink.html">netlink</a></li>
+  <li><a href="../modules/netlink.channel.html">netlink.channel</a></li>
+  <li><a href="../modules/netlink.genl.html">netlink.genl</a></li>
+  <li><a href="../modules/netlink.message.html">netlink.message</a></li>
+  <li><a href="../modules/netlink.nl80211.html">netlink.nl80211</a></li>
+  <li><a href="../modules/netlink.nl80211.interface.html">netlink.nl80211.interface</a></li>
+  <li><a href="../modules/netlink.nl80211.object.html">netlink.nl80211.object</a></li>
+  <li><a href="../modules/netlink.nl80211.wiphy.html">netlink.nl80211.wiphy</a></li>
+  <li><a href="../modules/netlink.rt.html">netlink.rt</a></li>
+  <li><a href="../modules/netlink.rt.addr.html">netlink.rt.addr</a></li>
+  <li><a href="../modules/netlink.rt.link.html">netlink.rt.link</a></li>
+  <li><a href="../modules/netlink.rt.object.html">netlink.rt.object</a></li>
+  <li><a href="../modules/netlink.rt.route.html">netlink.rt.route</a></li>
+  <li><a href="../modules/netlink.rt.rule.html">netlink.rt.rule</a></li>
+  <li><a href="../modules/netlink.session.html">netlink.session</a></li>
   <li><a href="../modules/notifier.html">notifier</a></li>
   <li><a href="../modules/probe.html">probe</a></li>
   <li><a href="../modules/rcu.html">rcu</a></li>
+  <li><a href="../modules/set.html">set</a></li>
   <li><a href="../modules/signal.html">signal</a></li>
   <li><a href="../modules/skb.html">skb</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/socket.inet.html">socket.inet</a></li>
   <li><a href="../modules/socket.raw.html">socket.raw</a></li>
   <li><a href="../modules/socket.unix.html">socket.unix</a></li>
+  <li><a href="../modules/struct.html">struct</a></li>
   <li><a href="../modules/syscall.html">syscall</a></li>
   <li><a href="../modules/syscall.table.html">syscall.table</a></li>
   <li><a href="../modules/thread.html">thread</a></li>
@@ -122,6 +146,22 @@
 	<tr>
 	<td class="name" nowrap><a href="#br.pri">br.pri</a></td>
 	<td class="summary">Netfilter hook priorities in the BRIDGE family.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ct.dir">ct.dir</a></td>
+	<td class="summary">Conntrack tuple directions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ct.info">ct.info</a></td>
+	<td class="summary">Conntrack per-packet states (IS_REPLY is the reply-direction threshold, not a state).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ct.status">ct.status</a></td>
+	<td class="summary">Conntrack status flags (NAT_CLASH is the in-kernel meaning of the obsolete UNTRACKED bit).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ct.tcp">ct.tcp</a></td>
+	<td class="summary">TCP conntrack states (SYN_SENT2 is the live name for the obsolete LISTEN).</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#inet">inet</a></td>
@@ -209,6 +249,66 @@
 
 </dd>
     <dt>
+    <a name = "ct.dir"></a>
+    <strong>ct.dir</strong>
+    </dt>
+    <dd>
+    Conntrack tuple directions.
+ Mirrors <code>IP_CT_DIR_*</code> defines in <code>&lt;uapi/linux/netfilter/nf_conntrack_tuple_common.h&gt;</code>.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ct.info"></a>
+    <strong>ct.info</strong>
+    </dt>
+    <dd>
+    Conntrack per-packet states (IS_REPLY is the reply-direction threshold, not a state).
+ Mirrors <code>IP_CT_*</code> defines in <code>&lt;uapi/linux/netfilter/nf_conntrack_common.h&gt;</code>.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ct.status"></a>
+    <strong>ct.status</strong>
+    </dt>
+    <dd>
+    Conntrack status flags (NAT_CLASH is the in-kernel meaning of the obsolete UNTRACKED bit).
+ Mirrors <code>IPS_*</code> defines in <code>&lt;uapi/linux/netfilter/nf_conntrack_common.h&gt;</code>.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ct.tcp"></a>
+    <strong>ct.tcp</strong>
+    </dt>
+    <dd>
+    TCP conntrack states (SYN_SENT2 is the live name for the obsolete LISTEN).
+ Mirrors <code>TCP_CONNTRACK_*</code> defines in <code>&lt;uapi/linux/netfilter/nf_conntrack_tcp.h&gt;</code>.
+
+
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "inet"></a>
     <strong>inet</strong>
     </dt>
@@ -275,7 +375,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2026-05-11 17:43:39 </i>
+<i style="float:right;">Last updated 2026-08-06 13:37:47 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -39,6 +39,7 @@
 <li><a href="#Lunatik_Lua_APIs">Lunatik Lua APIs </a></li>
 <li><a href="#Lunatik_C_API">Lunatik C API </a></li>
 <li><a href="#References">References </a></li>
+<li><a href="#Contributing">Contributing </a></li>
 <li><a href="#License">License </a></li>
 </ul>
 
@@ -49,23 +50,30 @@
 </ul>
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/bpf.html">bpf</a></li>
+  <li><a href="../modules/bpf.map.html">bpf.map</a></li>
   <li><a href="../modules/byteorder.html">byteorder</a></li>
+  <li><a href="../modules/class.html">class</a></li>
   <li><a href="../modules/completion.html">completion</a></li>
   <li><a href="../modules/cpu.html">cpu</a></li>
   <li><a href="../modules/crypto.html">crypto</a></li>
   <li><a href="../modules/darken.html">darken</a></li>
   <li><a href="../modules/data.html">data</a></li>
   <li><a href="../modules/device.html">device</a></li>
-  <li><a href="../modules/fib.html">fib</a></li>
   <li><a href="../modules/fifo.html">fifo</a></li>
   <li><a href="../modules/hid.html">hid</a></li>
   <li><a href="../modules/lighten.html">lighten</a></li>
   <li><a href="../modules/linux.html">linux</a></li>
+  <li><a href="../modules/linux.bpf.html">linux.bpf</a></li>
   <li><a href="../modules/linux.eth.html">linux.eth</a></li>
+  <li><a href="../modules/linux.genl.html">linux.genl</a></li>
   <li><a href="../modules/linux.kbd.html">linux.kbd</a></li>
   <li><a href="../modules/linux.netdev.html">linux.netdev</a></li>
+  <li><a href="../modules/linux.netlink.html">linux.netlink</a></li>
   <li><a href="../modules/linux.nf.html">linux.nf</a></li>
+  <li><a href="../modules/linux.nl80211.html">linux.nl80211</a></li>
   <li><a href="../modules/linux.notify.html">linux.notify</a></li>
+  <li><a href="../modules/linux.rtnetlink.html">linux.rtnetlink</a></li>
   <li><a href="../modules/linux.signal.html">linux.signal</a></li>
   <li><a href="../modules/linux.socket.html">linux.socket</a></li>
   <li><a href="../modules/linux.stat.html">linux.stat</a></li>
@@ -78,15 +86,32 @@
   <li><a href="../modules/mailbox.html">mailbox</a></li>
   <li><a href="../modules/net.html">net</a></li>
   <li><a href="../modules/netfilter.html">netfilter</a></li>
+  <li><a href="../modules/netlink.html">netlink</a></li>
+  <li><a href="../modules/netlink.channel.html">netlink.channel</a></li>
+  <li><a href="../modules/netlink.genl.html">netlink.genl</a></li>
+  <li><a href="../modules/netlink.message.html">netlink.message</a></li>
+  <li><a href="../modules/netlink.nl80211.html">netlink.nl80211</a></li>
+  <li><a href="../modules/netlink.nl80211.interface.html">netlink.nl80211.interface</a></li>
+  <li><a href="../modules/netlink.nl80211.object.html">netlink.nl80211.object</a></li>
+  <li><a href="../modules/netlink.nl80211.wiphy.html">netlink.nl80211.wiphy</a></li>
+  <li><a href="../modules/netlink.rt.html">netlink.rt</a></li>
+  <li><a href="../modules/netlink.rt.addr.html">netlink.rt.addr</a></li>
+  <li><a href="../modules/netlink.rt.link.html">netlink.rt.link</a></li>
+  <li><a href="../modules/netlink.rt.object.html">netlink.rt.object</a></li>
+  <li><a href="../modules/netlink.rt.route.html">netlink.rt.route</a></li>
+  <li><a href="../modules/netlink.rt.rule.html">netlink.rt.rule</a></li>
+  <li><a href="../modules/netlink.session.html">netlink.session</a></li>
   <li><a href="../modules/notifier.html">notifier</a></li>
   <li><a href="../modules/probe.html">probe</a></li>
   <li><a href="../modules/rcu.html">rcu</a></li>
+  <li><a href="../modules/set.html">set</a></li>
   <li><a href="../modules/signal.html">signal</a></li>
   <li><a href="../modules/skb.html">skb</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/socket.inet.html">socket.inet</a></li>
   <li><a href="../modules/socket.raw.html">socket.raw</a></li>
   <li><a href="../modules/socket.unix.html">socket.unix</a></li>
+  <li><a href="../modules/struct.html">struct</a></li>
   <li><a href="../modules/syscall.html">syscall</a></li>
   <li><a href="../modules/syscall.table.html">syscall.table</a></li>
   <li><a href="../modules/thread.html">thread</a></li>
@@ -200,7 +225,7 @@ compiled on kernel upgrade.</p>
 <h2>Usage</h2>
 
 <pre><code> sudo lunatik # execute Lunatik REPL
- Lunatik 4.3  Copyright (C) 2023-2026 Ring Zero Desenvolvimento de Software LTDA.
+ Lunatik 4.4  Copyright (C) 2023-2026 Ring Zero Desenvolvimento de Software LTDA.
  &gt; return 42 -- execute this line in the kernel
  42
 </code></pre>
@@ -210,7 +235,7 @@ compiled on kernel upgrade.</p>
 
 
 <pre>
-usage: lunatik [<span class="global">load</span>|unload|reload|status|test|list] [run|spawn|stop &lt;script&gt;]
+usage: lunatik [<span class="global">load</span>|unload|reload|status|test|list] [run|spawn|stop &lt;script&gt;] [percpu]
 </pre>
 
 
@@ -221,7 +246,7 @@ usage: lunatik [<span class="global">load</span>|unload|reload|status|test|list]
     <li><code>status</code>: show which Lunatik kernel modules are currently loaded</li>
     <li><code>test [suite]</code>: run installed test suites (see <a href="#testing">Testing</a>)</li>
     <li><code>list</code>: show which runtime environments are currently running</li>
-    <li><code>run [softirq|hardirq]</code>: create a new runtime environment to run the script <code>/lib/modules/lua/&lt;script&gt;.lua</code>; pass <code>softirq</code> for hooks that fire in softirq context (netfilter, XDP), or <code>hardirq</code> for hooks that fire in hardirq context (kprobes)</li>
+    <li><code>run [softirq|hardirq]</code>: create a new runtime environment to run the script <code>/lib/modules/lua/&lt;script&gt;.lua</code>; pass <code>softirq</code> for hooks that fire in softirq context (netfilter, XDP), or <code>hardirq</code> for hooks that fire in hardirq context (kprobes); optionally pass <code>percpu</code> to create one runtime instance per CPU id, for scripts dispatched by the eBPF bindings, which resolve to the instance of the CPU the hook runs on. The script runs once per instance</li>
     <li><code>spawn</code>: create a new runtime environment and spawn a thread to run the script <code>/lib/modules/lua/&lt;script&gt;.lua</code></li>
     <li><code>stop</code>: stop the runtime environment created to run the script <code>&lt;script&gt;</code></li>
     <li><code>default</code>: start a <em>REPL (Read–Eval–Print Loop)</em></li>
@@ -235,8 +260,9 @@ usage: lunatik [<span class="global">load</span>|unload|reload|status|test|list]
 <pre>
 sudo make install
 sudo lunatik test           # run all suites
-sudo lunatik test thread    # run a specific <span class="function-name">suite</span> (crypto, <span class="global">io</span>, monitor,
-                            # notifier, probe, rcu, runtime, socket, thread)
+sudo lunatik test thread    # run a specific <span class="function-name">suite</span> (bpf, crypto, <span class="global">io</span>, monitor,
+                            # netlink, notifier, probe, rcu, runtime, set, skb,
+                            # socket, struct, thread)
 </pre>
 
 
@@ -248,7 +274,7 @@ and individual tests.</p>
 <p><a name="Lua_Version"></a></p>
 <h2>Lua Version</h2>
 
-<p>Lunatik 4.3 is based on
+<p>Lunatik 4.4 is based on
 <a href="https://github.com/luainkernel/lua">Lua 5.5 adapted</a>
 to run in the kernel.</p>
 
@@ -293,16 +319,18 @@ On failure, error messages always read <code>&quot;I/O error&quot;</code> regard
 | <a href="../modules/linux.html#">linux</a> | Kernel utilities: <code>schedule</code>, <code>time</code>, <code>random</code>, <code>stat</code> flags |
 | <a href="../modules/thread.html#">thread</a> | Kernel threads: spawn, stop, <code>shouldstop</code> |
 | <a href="../modules/socket.html#">socket</a> | Kernel sockets: TCP, UDP, AF_PACKET, AF_UNIX |
+| <a href="../modules/netlink.html#">netlink</a> | Netlink namespace: rtnetlink and generic-netlink sessions, softirq-safe channel |
 | <a href="../modules/data.html#">data</a> | Raw memory buffer for binary data read/write |
 | <a href="../modules/device.html#">device</a> | Character device drivers |
 | <a href="../modules/rcu.html#">rcu</a> | RCU-protected shared hash table |
+| <a href="../modules/set.html#">set</a> | Compact immutable string set: exact membership, plus a suffix-matched labeled flavor |
 | <a href="../modules/netfilter.html#">netfilter</a> | Netfilter hooks: register packet processing callbacks |
 | <a href="../modules/skb.html#">skb</a> | Socket buffer (<code>sk_buff</code>): inspect and modify packets |
 | <a href="../modules/xdp.html#">xdp</a> | XDP (eXpress Data Path) hooks |
+| <a href="../modules/bpf.html#">bpf</a> | Pinned eBPF map access (hash, array, LRU hash, queue, stack) |
 | <a href="../modules/crypto.html#">crypto</a> | Kernel crypto API: hash, cipher, AEAD, RNG, compression |
 | <a href="../modules/hid.html#">hid</a> | HID device drivers |
 | <a href="../modules/probe.html#">probe</a> | Kernel probes (kprobe / tracepoint) |
-| <a href="../modules/fib.html#">fib</a> | FIB routing table lookup |
 | <a href="../modules/fifo.html#">fifo</a> | Kernel FIFO queues |
 | <a href="../modules/signal.html#">signal</a> | POSIX signal management |
 | <a href="../modules/byteorder.html#">byteorder</a> | Network byte order conversions |
@@ -720,6 +748,15 @@ sudo socat - UNIX-CONNECT:/tmp/cpuexporter.sock &lt;&lt;&lt;<span class="string"
 * <a href="https://www.google-melange.com/archive/gsoc/2015/orgs/lablua/projects/gmesalazar.html">Port Lua Test Suite to the NetBSD Kernel</a> — LabLua (2015), Guilherme Salazar
 * <a href="http://netbsd-soc.sourceforge.net/projects/luakern/">Lua scripting in the NetBSD kernel</a> — The NetBSD Foundation (2010), Lourival Vieira Neto</p>
 
+<p><a name="Contributing"></a></p>
+<h2>Contributing</h2>
+
+<p>Conventions for contributors, and for AI coding assistants working on this repository, are in
+<a href="AGENTS.md">AGENTS.md</a>: build and test loop, execution contexts, object model, code style, and commit
+discipline. Design notes for work in progress live under <a href="docs/design">docs/design</a>; what is being
+worked on, and how far along it is, lives in the
+<a href="https://github.com/orgs/luainkernel/projects">project boards</a>.</p>
+
 <p><a name="License"></a></p>
 <h2>License</h2>
 
@@ -737,7 +774,7 @@ For more details, see its <a href="https://github.com/luainkernel/klibc/blob/lun
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2026-05-11 17:43:39 </i>
+<i style="float:right;">Last updated 2026-08-06 13:37:47 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
